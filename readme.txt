@@ -1,1 +1,1 @@
-This is a link leven simulator for educational purposes.
+This is a link level simulator for educational purposes.
