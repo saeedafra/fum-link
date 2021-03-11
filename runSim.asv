@@ -14,9 +14,7 @@ end
 %results
 figure
 semilogy(SNRdb,SER,'r.-')
-Theory=0.5*erfc(sqrt(10.^(SNRdb/10)));
-hold on
-semilogy(SNRdb,Theory,'b.-')
+Theory=0.5*erfc(sqrt(10.^(SNRdb)/1
 xlabel('SNR [dB]')
 ylabel('SER [dB]')
 title(sprintf('modulation = %s', modulation))
