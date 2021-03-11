@@ -1,6 +1,8 @@
 %inputs
 SNRdb=-10:2:20;
 modulation="BPSK";
+numBits=10e7;
+noisePower=0.01;
 
 %initializations
 SER=zeros(size(SNRdb));
@@ -8,7 +10,7 @@ BER=zeros(size(SNRdb));
 
 %loop over SNR
 for kSNR=1:length(SNRdb)
-    [SER(kSNR), BER(kSNR)]=runScenario(modulation,SNRdb(kSNR));
+    [SER(kSNR), BER(kSNR)]=runScenario(modulation,SNRdb(kSNR),numBits,noisePower);
 end
 
 %results
