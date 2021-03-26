@@ -1,6 +1,6 @@
-function [SER, BER]=runScenario(modulation, SNRdB, numBits, noisePower)
+function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower)
     a=randi([0,1],[1,numBits]);
-    if strcmp(modulation,"BPSK")
+    if strcmp(modulationOrder,"BPSK")
         b=2*a-1;
         signalPower=10^(SNRdB/10)*noisePower;
         scaledSig=b*sqrt(signalPower);
