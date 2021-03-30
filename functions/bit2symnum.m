@@ -6,5 +6,5 @@ b=2.^[0:log2(order)-1];
 sym_num=(fliplr(b)*a)';
 
 else 
-    sym_num=bit_stream;
+    sym_num=bit_stream';
 end

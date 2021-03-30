@@ -1,8 +1,8 @@
 %inputs
-SNRdb=-10:2:12;
-modulationOrder=16;
-Modulation={'BPSK','QAM 4','QAM 8','QAM 16','QAM 32','QAM 64','QAM 128,QAM 256'};
-numBits=1e6;
+SNRdb=-10:2:20;
+modulationOrder=4;
+Modulation={'BPSK','QAM 4','QAM 8','QAM 16','QAM 32','QAM 64','QAM 128','QAM 256'};
+numBits=1e5;
 noisePower=0.01;
 
 %initializations
@@ -11,7 +11,7 @@ BER=zeros(size(SNRdb));
 
 %loop over SNR
 for kSNR=1:length(SNRdb)
-    [SER(kSNR), BER(kSNR)]=runScenario(modulationOrder,SNRdb(kSNR),numBits);
+    [SER(kSNR), BER(kSNR)]=runScenario(modulationOrder,SNRdb(kSNR),numBits,noisePower);
 end
 
 %results
