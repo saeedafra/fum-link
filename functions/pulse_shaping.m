@@ -2,7 +2,7 @@
 function [y,filter]=pulse_shaping(data,R,Fs,alpha,type)
 % function which takes modulation order, set of symbols and sampling
 % frequency and symbol duration (Ts) and outputs generated waveform
-% Currently the only available pulse shapes are Raised Cosine and Squared
+% Currently the available pulse shapes are Raised Cosine and Squared
 % Raised Cosine without any correlative coding. 
 %in next version correlative coding will be added.
 % alpha=pulse shaping parameter
