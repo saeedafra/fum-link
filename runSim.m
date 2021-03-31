@@ -1,6 +1,6 @@
 %inputs
 SNRdb=-10:2:20;
-modulationOrder=4;
+modulationOrder=256;
 Modulation={'BPSK','QAM 4','QAM 8','QAM 16','QAM 32','QAM 64','QAM 128','QAM 256'};
 numBits=1e5;
 noisePower=0.01;

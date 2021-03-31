@@ -3,13 +3,13 @@ switch modulationOrder
     case 2
         SER=0.5*erfc(sqrt(snrlin));
     case 4
-        SER=2*qfunc(sqrt(2*snrlin)).*(1-0.5*qfunc(sqrt(2*snrlin)));
+        SER=erfc(sqrt(snrlin)).*(1-0.25*erfc(sqrt(snrlin)));
     case 16
-        SER=3*qfunc(sqrt(0.8*snrlin)).*(1-0.75*qfunc(sqrt(0.8*snrlin)));
+        SER=1.5*erfc(sqrt(0.4*snrlin)).*(1-0.375*erfc(sqrt(0.4*snrlin)));
     case 64
-        SER=3.5*qfunc(sqrt(2/7*snrlin)).*(1-7/8*qfunc(sqrt(2/7*snrlin)));
+        SER=7/4*erfc(sqrt(1/7*snrlin)).*(1-7/16*erfc(sqrt(1/7*snrlin)));
     case 256
-        SER=15/4*qfunc(sqrt(24/255*snrlin)).*(1-15/16*qfunc(sqrt(24/255*snrlin)));
+        SER=15/8*erfc(sqrt(12/255*snrlin)).*(1-15/32*erfc(sqrt(12/255*snrlin)));
     otherwise
         error('Undefined')
 end
