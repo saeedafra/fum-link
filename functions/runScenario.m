@@ -1,18 +1,20 @@
 function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower)
-    k = 223; % message length, the number of symbols in one message. This should be smaller than (modulationOrder-1) and differ with (modulationOrder-1) by an even number. 
-    a=randi([0,1],[1,6*numBits]);
+    m = 3; % alphabet size of channel coding. n = 2^m-1 is the block length of the rs code. 
+    k = 3; % message length, the number of alphabets in one message, which should be < n = 2^m-1.
+    % (7,3)-RS code with 3-bit alphabets is used in this example. The
+    % encoder takes 3*3-bit message and returns 7*3-bit codeword. 
+    
+    InStream_bit = randi([0,1],[1,6*numBits]);
+    N_msg = fix(length(InStream_bit)/k/m); % number of messages
     
 %     if strcmp(modulationOrder,"BPSK")
-
-%       Transmitter
-        sym_num=bit2symnum(a,modulationOrder);
-        
-%       ENCODING message symbols -> codeword symbols: the block length is
-%       modulationOrder-1 if a codeword symbol is
-%       log2(modulationOrder)-bit. The input stream is going to be trimmed
-%       so that its length becomes to be the multiple of the block length.
-        sym_cw = encoder_rs(sym_num, log2(modulationOrder), k);
-        sym=bit2sym(modulationOrder,sym_cw); 
+       
+%       TX        
+%       ENCODING: k*m message bits -> n*m codeword bits
+        cw = encoder_rs(InStream_bit, m, k); 
+%       MODULATION: log2(modulationOrder) bits -> 1 complex symbol 
+        sym_num=bit2symnum(cw,modulationOrder);
+        sym=bit2sym(modulationOrder,sym_num);  
         signal_power=10.^(SNRdB/10)*noisePower*log2(modulationOrder);
         Scaled_signal=sqrt(signal_power)*sym;
         
@@ -21,19 +23,33 @@ function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower)
         %c=awgn(b,SNRdB);
         noisy=noise+Scaled_signal;
         
-%       Receiver 
+%       RX 
+%       DETECTION: 1 complex symbol -> log2(modulationOrder) bits
         detected=min_distance_detection(noisy,modulationOrder,signal_power);
-%       DECODING codeword symbols -> message symbols
-        sym_dec = decoder_rs(detected-1, log2(modulationOrder), k);
-        bit=sym2bit(sym_dec,modulationOrder);
+        bit=sym2bit(detected-1,modulationOrder);
+
+        if numel(bit) ~= numel(cw)
+            disp("Some bits for the last block (codeword) are not sent as the bit stream is not a multiple of log2(modulation order).\n")
+            disp("The last message will be ignored for the error analysis.")
+            N_msg = N_msg - 1;
+        end
+        
+%       DECODING: n*m codeword bits -> k*m message bits
+        bit_dec = decoder_rs(bit(1:N_msg*(2^m-1)*m), m, k);      
         
 %       Error Probability Analysis
-        sym_num_trim = sym_num(1: fix(length(sym_num)/k)*k); % If the sequence of symbols are not a multiple of the message length, it is trimmed to be one.
-        SER=(sum(sym_dec~=sym_num_trim'))/length(sym_dec);
-        a_trim = a(1:length(bit)); % a is trimmed so that its length is multiple of (block length)*(bits per symbol).
-        BER=sum(a_trim~=bit')/length(a_trim);
-%        bit=sym2bit(detected-1,modulationOrder);
-%        BER=sum(a~=bit')/length(a);
+%       Symbol Error Rate of Modulation
+        SER=(sum(detected-1~=sym_num'))/length(detected); 
+%       Frame Error Rate of Channel Coding
+        FE = 0;
+        for i = 1:N_msg
+            FE = FE + (bit_dec((i-1)*k+1:i*k)~=InStream_bit((i-1)*k+1:i*k));
+        end
+        FER=FE/N_msg;
+%       Bit Error Rate
+        BER=sum(InStream_bit(1:length(bit_dec))~=bit_dec') / length(InStream_bit_trim);
+        
+        
 %     else
 %         error("modulation order not supported")
 %     end
