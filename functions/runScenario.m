@@ -1,17 +1,17 @@
-function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower)
-    m = 3; % alphabet size of channel coding. n = 2^m-1 is the block length of the rs code. 
-    k = 3; % message length, the number of alphabets in one message, which should be < n = 2^m-1.
-    % (7,3)-RS code with 3-bit alphabets is used in this example. The
+function [SER, FER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower, AlphabetSize, MessageLength)
+    % AlphabetSize: alphabet size of channel coding. BlockLength = 2^AlphabetSize - 1 is the block length of the rs code. 
+    % MessageLength: the number of alphabets in one message, which should be < 2^AlphabetSize-1.
+    % E.g. When AlphabetSize = 3, MessageLength = 3, a (7,3)-RS code with 3-bit alphabets is constructed. The
     % encoder takes 3*3-bit message and returns 7*3-bit codeword. 
     
     InStream_bit = randi([0,1],[1,6*numBits]);
-    N_msg = fix(length(InStream_bit)/k/m); % number of messages
+    N_msg = fix(length(InStream_bit)/MessageLength/AlphabetSize); % number of messages
     
 %     if strcmp(modulationOrder,"BPSK")
        
 %       TX        
 %       ENCODING: k*m message bits -> n*m codeword bits
-        cw = encoder_rs(InStream_bit, m, k); 
+        cw = encoder_rs(InStream_bit, AlphabetSize, MessageLength); 
 %       MODULATION: log2(modulationOrder) bits -> 1 complex symbol 
         sym_num=bit2symnum(cw,modulationOrder);
         sym=bit2sym(modulationOrder,sym_num);  
@@ -35,7 +35,7 @@ function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower)
         end
         
 %       DECODING: n*m codeword bits -> k*m message bits
-        bit_dec = decoder_rs(bit(1:N_msg*(2^m-1)*m), m, k);      
+        bit_dec = decoder_rs(bit(1:N_msg*(2^AlphabetSize-1)*AlphabetSize), AlphabetSize, MessageLength)';      
         
 %       Error Probability Analysis
 %       Symbol Error Rate of Modulation
@@ -43,12 +43,11 @@ function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits, noisePower)
 %       Frame Error Rate of Channel Coding
         FE = 0;
         for i = 1:N_msg
-            FE = FE + (bit_dec((i-1)*k+1:i*k)~=InStream_bit((i-1)*k+1:i*k));
+            FE = FE + (sum(bit_dec((i-1)*MessageLength+1:i*MessageLength)~=InStream_bit((i-1)*MessageLength+1:i*MessageLength))>0);
         end
         FER=FE/N_msg;
 %       Bit Error Rate
-        BER=sum(InStream_bit(1:length(bit_dec))~=bit_dec') / length(InStream_bit_trim);
-        
+        BER=sum(InStream_bit(1:length(bit_dec))~=bit_dec) / length(bit_dec);
         
 %     else
 %         error("modulation order not supported")

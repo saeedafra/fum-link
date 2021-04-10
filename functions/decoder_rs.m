@@ -7,9 +7,7 @@ function [RecStream] = decoder_rs(NoisyOutStream_bit, m, k)
     % m: Number of bits per symbol
     % k: Number of symbols in a message, Message length
     n = 2^m-1; % Block length
-    size(NoisyOutStream_bit)
     NoisyOutStream_sym = bit2symnum(NoisyOutStream_bit, 2^m);
-    size(NoisyOutStream_sym)
     N_cw = fix(length(NoisyOutStream_sym)/n); % Number of messages
     NoisyOutStream_gf = gf(NoisyOutStream_sym(1:N_cw*n),m); 
     
