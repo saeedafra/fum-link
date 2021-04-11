@@ -1,18 +1,19 @@
-function [SER, BER]=runScenario(modulation, SNRdB, numBits, noisePower)
-    a=randi([0,1],[1,numBits]);
-    if strcmp(modulation,"BPSK")
-        b=2*a-1;
-        signalPower=10^(SNRdB/10)*noisePower;
-        scaledSig=b*sqrt(signalPower);
+function [SER, BER]=runScenario(modulationOrder, SNRdB, numBits,noisePower)
+    a=randi([0,1],[1,6*numBits]);
+%     if strcmp(modulationOrder,"BPSK")
+        
+        sym_num=bit2symnum(a,modulationOrder);
+        sym=bit2sym(modulationOrder,sym_num);
+        signal_power=10.^(SNRdB/10)*noisePower*log2(modulationOrder);
+        Scaled_signal=sqrt(signal_power)*sym;
+        noise=sqrt(noisePower)*sqrt(0.5)*(randn(1,length(sym))+1i*randn(1,length(sym)));
         %c=awgn(b,SNRdB);
-        noiseVec=sqrt(noisePower)*sqrt(1/2)*...
-            (randn(1,numBits)+ 1i*randn(1,numBits));
-        c=scaledSig+noiseVec;
-        c(real(c)>0)=1;
-        c(real(c)<=0)=-1;
-        SER=(sum(c~=b))/length(c);
-        BER=SER;
-    else
-        error("modulation order not supported")
-    end
+        noisy=noise+Scaled_signal;
+        detected=min_distance_detection(noisy,modulationOrder,signal_power);
+        SER=(sum(detected-1~=sym_num'))/length(detected);
+        bit=sym2bit(detected-1,modulationOrder);
+        BER=sum(a~=bit')/length(a);
+%     else
+%         error("modulation order not supported")
+%     end
 end

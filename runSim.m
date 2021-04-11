@@ -1,7 +1,8 @@
 %inputs
 SNRdb=-10:2:20;
-modulation="BPSK";
-numBits=10e7;
+modulationOrder=256;
+Modulation={'BPSK','QAM 4','QAM 8','QAM 16','QAM 32','QAM 64','QAM 128','QAM 256'};
+numBits=1e5;
 noisePower=0.01;
 
 %initializations
@@ -10,15 +11,17 @@ BER=zeros(size(SNRdb));
 
 %loop over SNR
 for kSNR=1:length(SNRdb)
-    [SER(kSNR), BER(kSNR)]=runScenario(modulation,SNRdb(kSNR),numBits,noisePower);
+    [SER(kSNR), BER(kSNR)]=runScenario(modulationOrder,SNRdb(kSNR),numBits,noisePower);
 end
 
 %results
 figure
-semilogy(SNRdb,SER,'r.-')
-Theory=0.5*erfc(sqrt(10.^(SNRdb/10)));
-hold ons
+snrlin=10.^(SNRdb/10);
+semilogy(SNRdb,SER,'r*')
+Theory=theory(modulationOrder,snrlin);
+hold on
 semilogy(SNRdb,Theory,'b.-')
 xlabel('SNR [dB]')
 ylabel('SER [dB]')
-title(sprintf('modulation = %s', modulation))
+grid on
+title(['Modulation' Modulation(log2(modulationOrder))])
