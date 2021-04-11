@@ -1,4 +1,5 @@
 function symbol=bit2sym(order,bit)
+bitnum=bit2symnum(bit,order);
 if order>2
         a=-sqrt(order)+1:2:sqrt(order)-1;
         b=(-sqrt(order)+1:2:sqrt(order)-1)*1j;
@@ -8,7 +9,7 @@ if order>2
     c=c(:);
     c=c.';
      coef=sum(abs(c).^2)/length(c);
-     symbol=sqrt(1/coef)*c(bit+1);
+     symbol=sqrt(1/coef)*c(bitnum+1);
 else
-    symbol=(2*bit-1)';
+    symbol=(2*bitnum-1)';
 end
