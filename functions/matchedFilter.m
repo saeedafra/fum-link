@@ -6,4 +6,4 @@ y=conv(data,filter);
 mid=length(filter);
 z=y(mid:end);
 d=downsample(z,os);
-stem(d,'filled')
+% stem(d,'filled')

@@ -29,15 +29,15 @@ function [y,filter]=pulse_shaping(data,R,Fs,alpha,type)
     end 
 
  
-    q=sqrt(sum(filter.^2));
+    q=sqrt(sum(abs(filter).^2));
     filter=filter/q;
-    sym=upsample(data,8)';
+    sym=upsample(data,Os);
 %     filter=filter/sqrt(sum(filter.^2));
     y=conv(sym,filter); 
 
-     stem(y,'filled') 
-     title(['Output waveform of' Type(type)])
-     xlabel('Samples') 
+%      stem(y,'filled') 
+%      title(['Output waveform of' Type(type)])
+%      xlabel('Samples') 
 
 
 

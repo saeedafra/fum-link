@@ -1,17 +1,17 @@
 %inputs
-SNRdb=-10:2:20;
-modulationOrder=256;
+SNRdb=10:14;
+modulationOrder=16;
 Modulation={'BPSK','QAM 4','QAM 8','QAM 16','QAM 32','QAM 64','QAM 128','QAM 256'};
-numBits=1e5;
+numBits=1e7;
 noisePower=0.01;
-
+alpha=0.3; % Pulse shaping Roll off factor
 %initializations
 SER=zeros(size(SNRdb));
 BER=zeros(size(SNRdb));
 
 %loop over SNR
 for kSNR=1:length(SNRdb)
-    [SER(kSNR), BER(kSNR)]=runScenario(modulationOrder,SNRdb(kSNR),numBits,noisePower);
+    [SER(kSNR), BER(kSNR)]=runScenario(modulationOrder,SNRdb(kSNR),numBits,noisePower,alpha);
 end
 
 %results
