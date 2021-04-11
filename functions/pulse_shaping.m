@@ -27,17 +27,17 @@ function [y,filter]=pulse_shaping(data,R,Fs,alpha,type)
     else 
         error('Undefined')
     end 
-    filter=filter./sqrt(sum(filter.^2));
-    sym=zeros(1,length(data)*Os); 
-    for i=1:length(data) 
-     sym((i-1)*Os+1:i*Os)=data(i); 
-    end
-    filter=filter/(sum(sqrt(filter.^2)));
+
+ 
+    q=sqrt(sum(filter.^2));
+    filter=filter/q;
+    sym=upsample(data,8)';
+%     filter=filter/sqrt(sum(filter.^2));
     y=conv(sym,filter); 
 
-    stem(y,'filled') 
-    title(['Output waveform of' Type(type)])
-    xlabel('Samples') 
+     stem(y,'filled') 
+     title(['Output waveform of' Type(type)])
+     xlabel('Samples') 
 
 
 

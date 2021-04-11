@@ -17,7 +17,7 @@ end
 figure
 semilogy(SNRdb,SER,'r.-')
 Theory=0.5*erfc(sqrt(10.^(SNRdb/10)));
-hold on
+hold ons
 semilogy(SNRdb,Theory,'b.-')
 xlabel('SNR [dB]')
 ylabel('SER [dB]')

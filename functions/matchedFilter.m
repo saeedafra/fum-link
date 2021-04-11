@@ -2,6 +2,8 @@
 function d=matchedFilter(data,filter,os)
 %oversampling factor
 y=conv(data,filter); 
-mid=ceil(os/2)+40;
+
+mid=length(filter);
 z=y(mid:end);
 d=downsample(z,os);
+stem(d,'filled')
