@@ -1,0 +1,2 @@
+function channel(inSignal,channelParams)
+

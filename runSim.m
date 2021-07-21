@@ -8,7 +8,7 @@ outStruct.BER=zeros(size(inStruct.SNRdb));
 
 %loop over SNR
 for kSNR=1:length(inStruct.SNRdb)
-    [outStruct.SER(kSNR), outStruct.BER(kSNR)]=runScenario(inStruct.modulationOrder,inStruct.SNRdb(kSNR),inStruct.numBits,inStruct.noisePower);
+    [outStruct.SER(kSNR), outStruct.BER(kSNR)]=runScenario(inStruct.modulationOrder,inStruct.SNRdb(kSNR),inStruct.numBits,inStruct.noisePower, inStruct.channelParams);
 end
 
 
